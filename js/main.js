@@ -1,9 +1,9 @@
 const apiKey = 'a9d625c4';
-let url = `http://www.omdbapi.com/?apikey=${apiKey}&s=Home-Alone`;
-let domain = `http://www.omdbapi.com/?`;
+let url = `https://www.omdbapi.com/?apikey=${apiKey}&s=Home-Alone`;
+let domain = `https://www.omdbapi.com/?`;
 let data, totalPages;
 let totalResults = 0;
-let test = `http://www.omdbapi.com/?apikey=a9d625c4&s=avatar&page=1&type=`;
+let test = `https://www.omdbapi.com/?apikey=a9d625c4&s=avatar&page=1&type=`;
 
 
 
@@ -105,10 +105,10 @@ createList = () => {
     }
 
     if (radio) {
-        url = `http://www.omdbapi.com/?apikey=${apiKey}&s=${name}&type=${radio}&page=${page}`;
+        url = `https://www.omdbapi.com/?apikey=${apiKey}&s=${name}&type=${radio}&page=${page}`;
     } else {
         radio = '';
-        url = `http://www.omdbapi.com/?apikey=${apiKey}&s=${name}&page=${page}&type=${radio}`;
+        url = `https://www.omdbapi.com/?apikey=${apiKey}&s=${name}&page=${page}&type=${radio}`;
     }
 
     getList(url);
