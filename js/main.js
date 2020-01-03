@@ -4,11 +4,9 @@ let domain = `https://www.omdbapi.com/?`;
 let data, totalPages;
 let totalResults = 0;
 let test = `https://www.omdbapi.com/?apikey=a9d625c4&s=avatar&page=1&type=`;
-
-
-
-
-
+let radio = false;
+let page = 1;
+let name = '';
 
 
 
@@ -19,7 +17,6 @@ class Movie {
         this.imdbID = data.imdbID;
         this.type = data.Type;
         this.poster = data.Poster;
-        // console.log(this);
         this.data = data;
     }
 
@@ -38,18 +35,26 @@ class Movie {
         result += `<div class="film__dec-item"><span>Title:</span> ${this.title}</div>`;
         result += `<div class="film__dec-item"><span>Year:</span> ${this.year}</div>`;
         result += `<div class="film__dec-item"><span>Type:</span> ${this.type}</div>`;
-        result += `<button class="film_details-bitn" onclick="showDetails(${this.imdbID})">Details</button>`;
+        // result += `<div class="imdbID" style="display:none;">${this.imdbID}</div>`;
+        console.log(this.imdbID);
+        result += `<button class="film_details-bitn" onclick="showDetails('${this.imdbID}')">Details</button>`;
         result += `<div class="film__details"></div>`;
         result += `</div>`;
         result += `</div>`;
 
         document.getElementById('content').innerHTML += result;
 
+        let paginator = ``;
+        for (let i = 1; i <= totalPages; i++) {
+            paginator += `<span class="paginator__item" onclick="createList(${i})">${i}</span>`;
+        }
+        document.getElementById('paginator').innerHTML = paginator;
+
     }
 
-    set showDetails (imdbID) {
-        console.log(imdbID);
-        // this.data.splice(imdbID, 1);   
+
+    clearData() {
+        document.getElementById('content').innerHTML = '';
     }
 }
 
@@ -59,59 +64,72 @@ class Movie {
 let getList = function(url) {
     console.log(url);
     fetch(url).then(function(result){
-    // console.log(result.json());
         return result.json();
     }).then(function(result) {
-        // console.log(result);
-        if (result) {
-            // console.log(result);    
+        if (result.Search) {
+
             data = result.Search;
-            // console.log(data);
             totalResults = result.totalResults;
-            // console.log(totalResults);
             totalPages = Math.ceil(totalResults / 10);
-            // console.log(totalPages);
 
             for (let film of data) {
                 // console.log(film);
                 let newFilm = new Movie(film);
+                // newFilm.clearData();
                 newFilm.print();
             }
         }
 
-        showDetails = (imdbID) => {
-            // console.log(imdbID);
-            newFilm.showDetails = imdbID;
-        }
         
     });
 }
 
-createList = () => {
-    let name = document.getElementById('name').value;
+showDetails = (id) => {
+    console.log(id);
+    let urlDetails = `${domain}apikey=${apiKey}&i=${id}&plot=full`;
+    console.log(urlDetails);
+
+    fetch(urlDetails).then(function(result){
+        return result.json();
+    }).then(function(result){
+        console.log(result.Plot);
+
+        let plot = `<div class="film__plot">${result.Plot}</div>`;
+        document.getElementById('details').innerHTML += plot;
+        
+    });
+}
+
+
+
+createList = (i = 1, imdbID = '') => {
+    console.log(imdbID);
+
+    document.getElementById('content').innerHTML = '';
+    document.getElementById('details').innerHTML = '';
+
+    name = document.getElementById('name').value;
 
     let arrRadio = document.getElementsByClassName('radioType');
-    // console.log(arrRadio);
-
-    let radio = false;
-    let page = 1;
-
     for (let i of arrRadio) {
         // console.log(i);
         if (i.checked) {
             radio = i.value;
-            // console.log(radio);
         }
     }
 
     if (radio) {
-        url = `https://www.omdbapi.com/?apikey=${apiKey}&s=${name}&type=${radio}&page=${page}`;
+        url = `${domain}apikey=${apiKey}&s=${name}&type=${radio}&page=${i}`;
     } else {
         radio = '';
-        url = `https://www.omdbapi.com/?apikey=${apiKey}&s=${name}&page=${page}&type=${radio}`;
+        url = `${domain}apikey=${apiKey}&s=${name}&page=${i}&type=${radio}`;
     }
+
 
     getList(url);
 }
+
+console.log('sd');
+
 
 
